@@ -25,10 +25,30 @@ class AuthenticationTest extends TestCase
 
     public function test_it_does_not_accept_duplicate_emails()
     {
-        $user = new User();
+        $user = factory(User::class)->create([
+            'email' => 'backend@multisyscorp.com',
+        ]);
 
+        $duplicatedEmail = ['email' => 'backend@multisyscorp.com', 'password' => 'test1234'];
 
-        $user = ['email' => 'backend@multisyscorp.com', 'password' => 'test1234'];
+        $this->json('POST', 'register', $duplicatedEmail, ['Accept' => 'application/json'])
+            ->assertJson([
+                'message' => 'Email already taken'
+            ])
+            ->assertStatus(400);
+    }
 
+    public function test_it_can_login_users_successfully()
+    {
+        $user = factory(User::class)->create([
+            'email' => 'backend@multisyscorp.com',
+            'password' => bcrypt('test1234'),
+        ]);
+        $login = ['email' => 'backend@multisyscorp.com', 'password' => 'test1234'];
+        $this->json('POST', 'login', $login, ['Accept' => 'application/json'])
+            ->assertJsonStructure([
+                'access_token',
+            ])
+            ->assertStatus(201);
     }
 }
