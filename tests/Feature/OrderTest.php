@@ -82,8 +82,16 @@ class OrderTest extends TestCase
         $this->assertEquals(100, Product::where('id', 1)->first()->available_stock);
     }
 
-//    public function test_it_does_not_allow_guest_to_order()
-//    {
-//
-//    }
+    /**
+     * @group order
+     */
+    public function test_it_does_not_allow_guest_to_order()
+    {
+        $orderData = ['product_id' => 1, 'quantity' => 5];
+        $this->json('POST', 'order', $orderData, ['Accept' => 'application/json'])
+            ->assertJson([
+                'message' => 'Unauthenticated.'
+            ])
+            ->assertStatus(401);
+    }
 }
