@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmail;
+use App\Mail\SuccessfulRegistration;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 
@@ -41,12 +44,18 @@ class AuthController extends Controller
         }
         catch(ValidationException $e)
         {
-            if($e->getMessage() == 'The given data was invalid.')
+            $err = $e->errors()['email'];
+            if(in_array('The given data was invalid.', $err, TRUE))
             {
                 return response()->json(['message' => 'Email already taken'], 400);
             }
+            else
+            {
+                return response()->json(['message' => $err[0]]);
+            }
         }
 
+        $this->dispatch(new SendEmail($validated['email'], new SuccessfulRegistration()));
         return response()->json(['message' => 'User successfully registered'], 201);
     }
 
