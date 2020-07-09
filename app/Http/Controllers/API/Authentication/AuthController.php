@@ -45,7 +45,7 @@ class AuthController extends Controller
         catch(ValidationException $e)
         {
             $err = $e->errors()['email'];
-            if(in_array('The given data was invalid.', $err, TRUE))
+            if(in_array('The email has already been taken.', $err, TRUE))
             {
                 return response()->json(['message' => 'Email already taken'], 400);
             }
