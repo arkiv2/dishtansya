@@ -116,6 +116,5 @@ class AuthenticationTest extends TestCase
                 'message' => 'Your Account is locked for 5 minutes',
             ])
             ->assertStatus(401);
-
     }
 }
