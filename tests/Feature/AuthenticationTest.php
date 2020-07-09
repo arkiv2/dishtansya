@@ -10,8 +10,6 @@ use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase, DatabaseMigrations;
-
     public function test_it_registers_user_successfully()
     {
         $user = ['email' => 'backend@multisyscorp.com', 'password' => 'test1234'];
