@@ -20,6 +20,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         'App\Events\OrderPlaced' => [
             'App\Listeners\UpdateProductStock',
+            'App\Listeners\CreateOrderData',
         ],
     ];
 
